@@ -12,16 +12,21 @@ public class Main {
     static TreeMap<String, Double> expUSD = new TreeMap<>();
     static TreeMap<String, Double> expEUR = new TreeMap<>();
 
-    public static void main(String[] args) throws IOException, CsvException {
+    public static void main(String[] args) {
 
-        BankStatementParser.parseCSV(MOVEMENT_LIST_CSV, MCC_CSV);
+        try {
 
-        System.out.println(getHeaderToString());
+            BankStatementParser.parseCSV(MOVEMENT_LIST_CSV, MCC_CSV);
 
-        System.out.println(getAllMovementsToString());
+            System.out.println(getHeaderToString());
 
-        getExpenseByMCCToString();
+            System.out.println(getAllMovementsToString());
 
+            getExpenseByMCCToString();
+
+        } catch (IOException | CsvException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private static String getHeaderToString() {
