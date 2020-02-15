@@ -3,6 +3,7 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,14 +12,14 @@ import java.util.*;
 
 class BankStatementParser {
 
-    private static ArrayList<BankStatementOperations> bsoList = new ArrayList<>();
-    private static HashMap<String, String> mccMap = new HashMap<>();
+    private ArrayList<BankStatementOperations> bsoList = new ArrayList<>();
+    private HashMap<String, String> mccMap = new HashMap<>();
 
     public BankStatementParser(String pathMovementList, String pathMCC) throws IOException, CsvException {
-        parseCSV(pathMovementList,pathMCC);
+        parseCSV(pathMovementList, pathMCC);
     }
 
-    public static List<BankStatementOperations> parseCSV(String pathMovementList, String pathMCC) throws IOException, CsvException {
+    public List<BankStatementOperations> parseCSV(String pathMovementList, String pathMCC) throws IOException, CsvException {
         parseMCCMap(pathMCC);
         Iterator<String[]> iter = new CSVIterator(new CSVReader(new BufferedReader(new FileReader(pathMovementList))));
         iter.next();
@@ -42,7 +43,7 @@ class BankStatementParser {
         return bsoList;
     }
 
-    private static void parseMCCMap(String MCCpath) throws IOException, CsvException {
+    private void parseMCCMap(String MCCpath) throws IOException, CsvException {
         CSVReader reader = new CSVReaderBuilder(new BufferedReader(new FileReader(MCCpath)))
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build()).build();
         List<String[]> tempFile = reader.readAll();
@@ -56,53 +57,53 @@ class BankStatementParser {
         reader.close();
     }
 
-    public static LocalDate getFirstDateINStatement(List<BankStatementOperations> bso) throws NullPointerException {
+    public LocalDate getFirstDateINStatement(List<BankStatementOperations> bso) throws NullPointerException {
         LocalDate[] tempDates = bso.stream().map(BankStatementOperations::getDate).toArray(LocalDate[]::new);
         if (tempDates == null) throw new NullPointerException();
         return Arrays.stream(tempDates).min(Comparator.comparing(LocalDate::toEpochDay)).get();
     }
 
-    public static LocalDate getLastDateInStatement(List<BankStatementOperations> bso) throws NullPointerException {
+    public LocalDate getLastDateInStatement(List<BankStatementOperations> bso) throws NullPointerException {
         LocalDate[] tempDates = bso.stream().map(BankStatementOperations::getDate).toArray(LocalDate[]::new);
         if (tempDates == null) throw new NullPointerException();
         return Arrays.stream(tempDates).max(Comparator.comparing(LocalDate::toEpochDay)).get();
     }
 
-    public static double getIncomeSumRUR(List<BankStatementOperations> bsoList) {
+    public double getIncomeSumRUR(List<BankStatementOperations> bsoList) {
         return bsoList.stream().filter(BankStatementOperations::isRUR)
                 .mapToDouble(BankStatementOperations::getIncome).sum();
     }
 
-    public static double getIncomeSumEUR(List<BankStatementOperations> bsoList) {
+    public double getIncomeSumEUR(List<BankStatementOperations> bsoList) {
         return bsoList.stream().filter(BankStatementOperations::isEUR)
                 .mapToDouble(BankStatementOperations::getIncome).sum();
     }
 
-    public static double getIncomeSumUSD(List<BankStatementOperations> bsoList) {
+    public double getIncomeSumUSD(List<BankStatementOperations> bsoList) {
         return bsoList.stream().filter(BankStatementOperations::isUSD)
                 .mapToDouble(BankStatementOperations::getIncome).sum();
     }
 
-    public static double getExpenseSumRUR(List<BankStatementOperations> bsoList) {
+    public double getExpenseSumRUR(List<BankStatementOperations> bsoList) {
         return bsoList.stream().filter(BankStatementOperations::isRUR)
                 .mapToDouble(BankStatementOperations::getExpense).sum();
     }
 
-    public static double getExpenseSumEUR(List<BankStatementOperations> bsoList) {
+    public double getExpenseSumEUR(List<BankStatementOperations> bsoList) {
         return bsoList.stream().filter(BankStatementOperations::isEUR)
                 .mapToDouble(BankStatementOperations::getExpense).sum();
     }
 
-    public static double getExpenseSumUSD(List<BankStatementOperations> bsoList) {
+    public double getExpenseSumUSD(List<BankStatementOperations> bsoList) {
         return bsoList.stream().filter(BankStatementOperations::isUSD)
                 .mapToDouble(BankStatementOperations::getExpense).sum();
     }
 
-    public static HashMap<String, String> getMccMap() {
+    public HashMap<String, String> getMccMap() {
         return mccMap;
     }
 
-    public static ArrayList<BankStatementOperations> getBsoList() {
+    public ArrayList<BankStatementOperations> getBsoList() {
         return bsoList;
     }
 }
